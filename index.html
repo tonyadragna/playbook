@@ -104,8 +104,12 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .card-btn-signal:active { background: var(--accent); color: #000; }
 .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 15px; }
 
-/* ASSISTANT */
-#assistant-screen { background: var(--bg); }
+/* ASSISTANT TABS */
+.asst-tabs { display: flex; gap: 4px; margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; flex-shrink: 0; }
+.asst-tab { flex: 1; text-align: center; padding: 7px 0; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; color: var(--muted); border: none; font-family: var(--font-body); transition: all 0.2s; }
+.asst-tab.active { background: var(--surface2); color: var(--text); }
+
+/* ASSISTANT PLAYS */
 .filter-row { padding: 14px 24px 0; display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; }
 .filter-row::-webkit-scrollbar { display: none; }
 .filter-pill { height: 34px; padding: 0 16px; border-radius: 100px; white-space: nowrap; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
@@ -117,7 +121,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 
 .recents-section { margin-bottom: 18px; }
 .recents-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-.recents-row { display: flex; gap: 8px; }
+.recents-row { display: flex; gap: 8px; overflow-x: auto; }
 .recents-row::-webkit-scrollbar { display: none; }
 .recent-chip { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border2); border-radius: 100px; padding: 7px 18px; font-family: var(--font-display); font-size: 17px; letter-spacing: 0.04em; color: var(--text); cursor: pointer; white-space: nowrap; }
 .recent-chip:active { background: var(--accent-dim); border-color: var(--accent); }
@@ -129,6 +133,52 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .asst-play-name { font-family: var(--font-display); font-size: 24px; letter-spacing: 0.04em; color: var(--text); line-height: 1.1; }
 .asst-play-cat { font-size: 11px; color: var(--muted); }
 .asst-star { position: absolute; top: 9px; right: 10px; font-size: 12px; color: var(--star); }
+
+/* COMBO TAB */
+.combo-area { flex: 1; overflow-y: auto; padding: 16px 24px 24px; display: flex; flex-direction: column; gap: 16px; }
+.combo-area::-webkit-scrollbar { display: none; }
+
+.combo-preview {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.combo-preview-text {
+  font-family: var(--font-display); font-size: 28px; letter-spacing: 0.04em; color: var(--accent);
+  line-height: 1; flex: 1; word-break: break-word;
+}
+.combo-preview-empty { color: var(--muted); font-size: 14px; font-family: var(--font-body); }
+.combo-signal-btn {
+  height: 44px; padding: 0 22px; border-radius: 8px; background: var(--accent);
+  color: #000; font-weight: 600; font-size: 15px; border: none; cursor: pointer;
+  font-family: var(--font-body); white-space: nowrap; flex-shrink: 0;
+}
+.combo-signal-btn:active { opacity: 0.8; }
+.combo-signal-btn:disabled { opacity: 0.3; cursor: default; }
+
+.combo-slots { display: flex; flex-direction: column; gap: 10px; }
+.combo-slot {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden;
+}
+.combo-slot-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+}
+.combo-slot-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.combo-slot-clear { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; line-height: 1; padding: 0; }
+.combo-slot-clear:active { color: #ff5050; }
+.combo-slot-selected {
+  padding: 10px 14px; font-family: var(--font-display); font-size: 22px;
+  letter-spacing: 0.04em; color: var(--accent); line-height: 1;
+}
+.combo-slot-picks { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px; }
+.combo-pick-btn {
+  background: var(--surface2); border: 1px solid var(--border2); border-radius: 100px;
+  padding: 6px 14px; font-family: var(--font-display); font-size: 16px; letter-spacing: 0.04em;
+  color: var(--text); cursor: pointer; -webkit-appearance: none;
+}
+.combo-pick-btn:active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.combo-pick-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
 /* DISPLAY */
 #display-screen { background: #000; }
@@ -195,8 +245,62 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
       <button class="mode-btn active" onclick="switchMode('assistant')">Assistant</button>
     </div>
   </div>
-  <div class="filter-row" id="filter-row"></div>
-  <div class="asst-plays-area" id="asst-plays-list"></div>
+
+  <div class="asst-tabs">
+    <button class="asst-tab active" id="atab-plays-btn" onclick="showAsstTab('plays')">Plays</button>
+    <button class="asst-tab" id="atab-combo-btn" onclick="showAsstTab('combo')">Combo</button>
+  </div>
+
+  <!-- Plays tab -->
+  <div id="atab-plays" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+    <div class="filter-row" id="filter-row"></div>
+    <div class="asst-plays-area" id="asst-plays-list"></div>
+  </div>
+
+  <!-- Combo tab -->
+  <div id="atab-combo" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+    <div class="combo-area" id="combo-area">
+
+      <!-- Live preview + signal button -->
+      <div class="combo-preview">
+        <div id="combo-preview-text" class="combo-preview-empty">Select plays below</div>
+        <button class="combo-signal-btn" id="combo-signal-btn" onclick="signalCombo()" disabled>Signal</button>
+      </div>
+
+      <!-- Slot 1 -->
+      <div class="combo-slots">
+        <div class="combo-slot" id="slot-0">
+          <div class="combo-slot-header">
+            <div class="combo-slot-label">Concept 1</div>
+            <button class="combo-slot-clear" onclick="clearSlot(0)">×</button>
+          </div>
+          <div id="slot-0-selected" style="display:none;" class="combo-slot-selected"></div>
+          <div class="combo-slot-picks" id="slot-0-picks"></div>
+        </div>
+
+        <!-- Slot 2 -->
+        <div class="combo-slot" id="slot-1">
+          <div class="combo-slot-header">
+            <div class="combo-slot-label">Concept 2</div>
+            <button class="combo-slot-clear" onclick="clearSlot(1)">×</button>
+          </div>
+          <div id="slot-1-selected" style="display:none;" class="combo-slot-selected"></div>
+          <div class="combo-slot-picks" id="slot-1-picks"></div>
+        </div>
+
+        <!-- Slot 3 (optional) -->
+        <div class="combo-slot" id="slot-2">
+          <div class="combo-slot-header">
+            <div class="combo-slot-label">Concept 3 <span style="color:var(--muted);font-size:10px;font-weight:400;">(optional)</span></div>
+            <button class="combo-slot-clear" onclick="clearSlot(2)">×</button>
+          </div>
+          <div id="slot-2-selected" style="display:none;" class="combo-slot-selected"></div>
+          <div class="combo-slot-picks" id="slot-2-picks"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <!-- DISPLAY SCREEN -->
@@ -213,6 +317,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   const BUILTIN_CATS = ['Offense','BLOB','SLOB','ATO','Full Court'];
   let plays = [], customCats = [], recents = [];
   let activeFilter = 'All', previousScreen = 'assistant';
+  let comboSlots = [null, null, null]; // each is a play name string or null
 
   function allCats() { return [...BUILTIN_CATS, ...customCats]; }
 
@@ -236,26 +341,17 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     saveCats(); input.value = '';
     renderCatManager(); populateCatSelect();
   }
-
   function deleteCategory(name) {
-    if (plays.some(p => p.category === name)) {
-      alert('Move or remove all plays in "' + name + '" before deleting this category.');
-      return;
-    }
+    if (plays.some(p => p.category === name)) { alert('Move or remove all plays in "' + name + '" before deleting this category.'); return; }
     customCats = customCats.filter(c => c !== name);
     saveCats(); renderCatManager(); populateCatSelect();
   }
-
   function renderCatManager() {
     document.getElementById('cat-chips').innerHTML = allCats().map(cat => {
       const builtin = BUILTIN_CATS.includes(cat);
-      return `<div class="cat-chip ${builtin ? 'builtin' : ''}">
-        ${escHtml(cat)}
-        ${builtin ? '' : `<button class="cat-chip-del" onclick="deleteCategory('${escAttr(cat)}')">×</button>`}
-      </div>`;
+      return `<div class="cat-chip${builtin?' builtin':''}">${escHtml(cat)}${builtin?'':`<button class="cat-chip-del" onclick="deleteCategory('${escAttr(cat)}')">×</button>`}</div>`;
     }).join('');
   }
-
   function populateCatSelect() {
     const sel = document.getElementById('cat-input');
     const prev = sel.value;
@@ -264,10 +360,19 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 
   // COACH TABS
   function showCoachTab(tab) {
-    document.getElementById('tab-plays-btn').classList.toggle('active', tab === 'plays');
-    document.getElementById('tab-cats-btn').classList.toggle('active', tab === 'cats');
-    document.getElementById('tab-plays').style.display = tab === 'plays' ? 'flex' : 'none';
-    document.getElementById('tab-cats').style.display = tab === 'cats' ? 'flex' : 'none';
+    document.getElementById('tab-plays-btn').classList.toggle('active', tab==='plays');
+    document.getElementById('tab-cats-btn').classList.toggle('active', tab==='cats');
+    document.getElementById('tab-plays').style.display = tab==='plays' ? 'flex' : 'none';
+    document.getElementById('tab-cats').style.display = tab==='cats' ? 'flex' : 'none';
+  }
+
+  // ASSISTANT TABS
+  function showAsstTab(tab) {
+    document.getElementById('atab-plays-btn').classList.toggle('active', tab==='plays');
+    document.getElementById('atab-combo-btn').classList.toggle('active', tab==='combo');
+    document.getElementById('atab-plays').style.display = tab==='plays' ? 'flex' : 'none';
+    document.getElementById('atab-combo').style.display = tab==='combo' ? 'flex' : 'none';
+    if (tab==='combo') renderCombo();
   }
 
   // PLAYS
@@ -280,9 +385,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     document.getElementById('play-input').value = '';
     renderCoach(); renderAssistant();
   }
-
-  document.getElementById('play-input').addEventListener('keydown', e => { if (e.key === 'Enter') addPlay(); });
-  document.getElementById('new-cat-input').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
+  document.getElementById('play-input').addEventListener('keydown', e => { if (e.key==='Enter') addPlay(); });
+  document.getElementById('new-cat-input').addEventListener('keydown', e => { if (e.key==='Enter') addCategory(); });
 
   function deletePlay(id) {
     if (!confirm('Remove this play?')) return;
@@ -291,20 +395,68 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     savePlays(); saveRecents();
     renderCoach(); renderAssistant();
   }
-
   function toggleStar(id) {
     const p = plays.find(p => p.id === id);
     if (!p) return;
     p.starred = !p.starred;
     savePlays(); renderCoach(); renderAssistant();
   }
-
   function signalPlay(id) {
     const play = plays.find(p => p.id === id);
     if (!play) return;
     recents = [id, ...recents.filter(r => r !== id)].slice(0, 5);
     saveRecents();
-    showDisplay(play);
+    showDisplay(play.name);
+  }
+
+  // COMBO
+  function setSlot(slotIdx, name) {
+    comboSlots[slotIdx] = name;
+    renderCombo();
+  }
+  function clearSlot(slotIdx) {
+    comboSlots[slotIdx] = null;
+    renderCombo();
+  }
+  function renderCombo() {
+    const sortedNames = plays.map(p => p.name).sort((a,b) => a.localeCompare(b));
+    for (let i = 0; i < 3; i++) {
+      const selectedEl = document.getElementById(`slot-${i}-selected`);
+      const picksEl = document.getElementById(`slot-${i}-picks`);
+      if (comboSlots[i]) {
+        selectedEl.textContent = comboSlots[i];
+        selectedEl.style.display = 'block';
+        picksEl.style.display = 'none';
+      } else {
+        selectedEl.style.display = 'none';
+        picksEl.style.display = 'flex';
+        picksEl.innerHTML = sortedNames.map(name =>
+          `<button class="combo-pick-btn${comboSlots[i]===name?' selected':''}" onclick="setSlot(${i},'${escAttr(name)}')">${escHtml(name)}</button>`
+        ).join('');
+      }
+    }
+    // Update preview
+    const filled = comboSlots.filter(Boolean);
+    const previewEl = document.getElementById('combo-preview-text');
+    const signalBtn = document.getElementById('combo-signal-btn');
+    if (filled.length >= 2) {
+      previewEl.className = 'combo-preview-text';
+      previewEl.textContent = filled.join(' - ');
+      signalBtn.disabled = false;
+    } else {
+      previewEl.className = 'combo-preview-empty';
+      previewEl.textContent = filled.length === 1 ? `${filled[0]} - ?` : 'Select at least 2 concepts';
+      signalBtn.disabled = true;
+    }
+  }
+  function signalCombo() {
+    const filled = comboSlots.filter(Boolean);
+    if (filled.length < 2) return;
+    const comboName = filled.join(' - ');
+    // Add to recents as a synthetic entry
+    recents = ['combo:' + comboName, ...recents.filter(r => r !== 'combo:' + comboName)].slice(0, 5);
+    saveRecents();
+    showDisplay(comboName);
   }
 
   // RENDER COACH
@@ -316,11 +468,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     const byCat = {};
     cats.forEach(c => byCat[c] = []);
     plays.forEach(p => { if (byCat[p.category] !== undefined) byCat[p.category].push(p); });
-    cats.forEach(c => byCat[c].sort((a, b) => {
-      if (a.starred && !b.starred) return -1;
-      if (!a.starred && b.starred) return 1;
-      return a.name.localeCompare(b.name);
-    }));
+    cats.forEach(c => byCat[c].sort((a,b) => { if(a.starred&&!b.starred)return -1; if(!a.starred&&b.starred)return 1; return a.name.localeCompare(b.name); }));
     container.innerHTML = cats.filter(c => byCat[c].length > 0).map(cat => `
       <div class="cat-group">
         <div class="cat-label">${escHtml(cat)}</div>
@@ -328,113 +476,91 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
           ${byCat[cat].map(p => `
             <div class="play-card${p.starred?' starred':''}">
               <div class="play-card-top">
-                <div>
-                  <div class="play-card-name">${escHtml(p.name)}</div>
-                  <div class="play-card-cat">${escHtml(p.category)}</div>
-                </div>
-                <button class="star-btn${p.starred?' on':''}" onclick="toggleStar(${p.id})" title="${p.starred?'Unstar':'Star'}">★</button>
+                <div><div class="play-card-name">${escHtml(p.name)}</div><div class="play-card-cat">${escHtml(p.category)}</div></div>
+                <button class="star-btn${p.starred?' on':''}" onclick="toggleStar(${p.id})">★</button>
               </div>
               <div class="play-card-actions">
                 <button class="card-btn card-btn-delete" onclick="deletePlay(${p.id})">Remove</button>
                 <button class="card-btn card-btn-signal" onclick="signalPlay(${p.id})">Signal</button>
               </div>
-            </div>
-          `).join('')}
+            </div>`).join('')}
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
   // RENDER ASSISTANT
   function renderAssistant() { renderFilters(); renderAsstPlays(); }
-
   function renderFilters() {
     const usedCats = [...new Set(plays.map(p => p.category))];
     const availCats = allCats().filter(c => usedCats.includes(c));
     const hasStarred = plays.some(p => p.starred);
     const pills = [
-      { key: 'All', label: 'All', cls: '' },
-      ...(hasStarred ? [{ key: 'Starred', label: '★ Starred', cls: 'star-pill' }] : []),
-      ...availCats.map(c => ({ key: c, label: c, cls: '' }))
+      { key:'All', label:'All', cls:'' },
+      ...(hasStarred?[{ key:'Starred', label:'★ Starred', cls:'star-pill' }]:[]),
+      ...availCats.map(c => ({ key:c, label:c, cls:'' }))
     ];
     document.getElementById('filter-row').innerHTML = pills.map(p =>
       `<button class="filter-pill ${p.cls}${activeFilter===p.key?' active':''}" onclick="setFilter('${escAttr(p.key)}')">${escHtml(p.label)}</button>`
     ).join('');
   }
-
   function setFilter(cat) { activeFilter = cat; renderFilters(); renderAsstPlays(); }
-
   function renderAsstPlays() {
     const container = document.getElementById('asst-plays-list');
-    let filtered = activeFilter === 'All' ? plays.slice()
-      : activeFilter === 'Starred' ? plays.filter(p => p.starred)
-      : plays.filter(p => p.category === activeFilter);
-
-    filtered.sort((a, b) => {
-      if (a.starred && !b.starred) return -1;
-      if (!a.starred && b.starred) return 1;
-      return a.name.localeCompare(b.name);
-    });
-
-    const recentPlays = recents.map(id => plays.find(p => p.id === id)).filter(Boolean);
+    let filtered = activeFilter==='All' ? plays.slice() : activeFilter==='Starred' ? plays.filter(p=>p.starred) : plays.filter(p=>p.category===activeFilter);
+    filtered.sort((a,b) => { if(a.starred&&!b.starred)return -1; if(!a.starred&&b.starred)return 1; return a.name.localeCompare(b.name); });
+    // Recents — filter out combo entries for display
+    const recentPlays = recents
+      .filter(r => !String(r).startsWith('combo:'))
+      .map(id => plays.find(p => p.id === id)).filter(Boolean);
     const recentsHtml = recentPlays.length ? `
       <div class="recents-section">
         <div class="recents-label">Recent</div>
-        <div class="recents-row">
-          ${recentPlays.map(p => `<div class="recent-chip" onclick="signalPlay(${p.id})">${escHtml(p.name)}</div>`).join('')}
-        </div>
+        <div class="recents-row">${recentPlays.map(p=>`<div class="recent-chip" onclick="signalPlay(${p.id})">${escHtml(p.name)}</div>`).join('')}</div>
       </div>` : '';
-
     if (!filtered.length) { container.innerHTML = recentsHtml + '<div class="empty-state">No plays in this category.</div>'; return; }
-
     container.innerHTML = recentsHtml + `<div class="asst-grid">
-      ${filtered.map(p => `
+      ${filtered.map(p=>`
         <button class="asst-play-btn${p.starred?' starred':''}" onclick="signalPlay(${p.id})">
-          ${p.starred ? '<div class="asst-star">★</div>' : ''}
+          ${p.starred?'<div class="asst-star">★</div>':''}
           <div class="asst-play-name">${escHtml(p.name)}</div>
           <div class="asst-play-cat">${escHtml(p.category)}</div>
-        </button>
-      `).join('')}
+        </button>`).join('')}
     </div>`;
   }
 
   // SCREEN SWITCHING
   function switchMode(mode) {
-    document.getElementById('coach-screen').classList.toggle('active', mode === 'coach');
-    document.getElementById('assistant-screen').classList.toggle('active', mode === 'assistant');
+    document.getElementById('coach-screen').classList.toggle('active', mode==='coach');
+    document.getElementById('assistant-screen').classList.toggle('active', mode==='assistant');
     document.getElementById('display-screen').classList.remove('active');
     previousScreen = mode;
-    if (mode === 'assistant') renderAssistant();
+    if (mode==='assistant') renderAssistant();
   }
 
   // DISPLAY
-  function showDisplay(play) {
+  function showDisplay(name) {
     document.getElementById('display-screen').classList.add('active');
     document.getElementById('coach-screen').classList.remove('active');
     document.getElementById('assistant-screen').classList.remove('active');
     document.getElementById('display-idle-text').style.display = 'none';
     const el = document.getElementById('display-play-text');
-    el.textContent = play.name;
+    el.textContent = name;
     el.style.display = 'block';
-    const len = play.name.length;
-    let vw = len <= 4 ? 48 : len <= 8 ? 38 : len <= 12 ? 28 : 20;
+    const len = name.length;
+    let vw = len <= 4 ? 48 : len <= 8 ? 38 : len <= 12 ? 28 : len <= 20 ? 18 : 13;
     el.style.fontSize = vw + 'vw';
     setTimeout(() => {
-      while (el.scrollHeight > window.innerHeight * 0.92 && vw > 4) {
-        vw -= 0.5; el.style.fontSize = vw + 'vw';
-      }
+      while (el.scrollHeight > window.innerHeight * 0.92 && vw > 4) { vw -= 0.5; el.style.fontSize = vw + 'vw'; }
     }, 30);
   }
-
   function clearDisplay() {
     document.getElementById('display-idle-text').style.display = 'block';
     const el = document.getElementById('display-play-text');
     el.style.display = 'none'; el.textContent = '';
   }
-
   function closeDisplay() {
     document.getElementById('display-screen').classList.remove('active');
-    document.getElementById(previousScreen === 'coach' ? 'coach-screen' : 'assistant-screen').classList.add('active');
+    document.getElementById(previousScreen==='coach'?'coach-screen':'assistant-screen').classList.add('active');
   }
 
   function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -442,6 +568,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 
   load();
   showCoachTab('plays');
+  showAsstTab('plays');
   renderCoach();
   renderAssistant();
 </script>
