@@ -13,11 +13,9 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then(reg => {
       reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            newWorker.postMessage({ action: 'skipWaiting' });
-          }
+        const w = reg.installing;
+        w.addEventListener('statechange', () => {
+          if (w.state === 'installed' && navigator.serviceWorker.controller) w.postMessage({ action: 'skipWaiting' });
         });
       });
     });
@@ -25,230 +23,178 @@
   }
 </script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --surface2: #1e1e1e;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.15);
-    --text: #f0f0f0;
-    --muted: #888;
-    --accent: #e8ff47;
-    --accent-dim: rgba(232,255,71,0.12);
-    --radius: 12px;
-    --font-display: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
-    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface2: #1e1e1e;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.15);
+  --text: #f0f0f0;
+  --muted: #888;
+  --accent: #e8ff47;
+  --accent-dim: rgba(232,255,71,0.12);
+  --star: #f5a623;
+  --radius: 12px;
+  --font-display: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-body); }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-body); }
+.screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
+.screen.active { display: flex; }
 
-  /* SCREENS */
-  .screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
-  .screen.active { display: flex; }
+/* SHARED HEADER */
+.screen-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.screen-title { font-family: var(--font-display); font-size: 32px; letter-spacing: 0.04em; color: var(--text); line-height: 1; }
+.screen-title span { color: var(--accent); }
+.mode-toggle { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; }
+.mode-btn { padding: 6px 14px; border-radius: 7px; font-size: 13px; font-weight: 500; border: none; cursor: pointer; font-family: var(--font-body); background: transparent; color: var(--muted); transition: all 0.2s; }
+.mode-btn.active { background: var(--accent); color: #000; }
 
-  /* ===================== COACH SCREEN ===================== */
-  #coach-screen { background: var(--bg); }
+/* COACH TABS */
+.coach-tabs { display: flex; gap: 4px; margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; flex-shrink: 0; }
+.coach-tab { flex: 1; text-align: center; padding: 7px 0; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; color: var(--muted); border: none; font-family: var(--font-body); transition: all 0.2s; }
+.coach-tab.active { background: var(--surface2); color: var(--text); }
 
-  .coach-header {
-    padding: 20px 24px 0;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0;
-  }
-  .coach-title { font-family: var(--font-display); font-size: 32px; letter-spacing: 0.04em; color: var(--text); line-height: 1; }
-  .coach-title span { color: var(--accent); }
+/* ADD PLAY FORM */
+.add-form { margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; flex-shrink: 0; }
+.add-form-row { display: flex; gap: 8px; align-items: flex-end; }
+.add-form label { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 5px; }
+.add-form input, .add-form select { height: 40px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: var(--font-body); font-size: 14px; padding: 0 12px; outline: none; width: 100%; }
+.add-form input::placeholder { color: var(--muted); }
+.add-form input:focus { border-color: var(--accent); }
+.add-form select option { background: #1e1e1e; }
+.field-name { flex: 1; }
+.field-cat { width: 148px; flex-shrink: 0; }
+.add-btn { height: 40px; padding: 0 18px; border-radius: 8px; flex-shrink: 0; background: var(--accent); color: #000; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: var(--font-body); white-space: nowrap; }
+.add-btn:active { opacity: 0.8; }
 
-  .mode-toggle {
-    display: flex; gap: 4px;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px;
-  }
-  .mode-btn {
-    padding: 6px 14px; border-radius: 7px; font-size: 13px; font-weight: 500;
-    border: none; cursor: pointer; font-family: var(--font-body);
-    background: transparent; color: var(--muted); transition: all 0.2s;
-  }
-  .mode-btn.active { background: var(--accent); color: #000; }
+/* CATEGORIES MANAGER */
+.cat-manager { margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; flex-shrink: 0; }
+.cat-manager-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.cat-manager-row input { flex: 1; height: 40px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: var(--font-body); font-size: 14px; padding: 0 12px; outline: none; }
+.cat-manager-row input::placeholder { color: var(--muted); }
+.cat-manager-row input:focus { border-color: var(--accent); }
+.cat-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-chip { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 100px; padding: 5px 14px; font-size: 13px; color: var(--text); }
+.cat-chip.builtin { opacity: 0.45; }
+.cat-chip-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; padding: 0 0 0 2px; }
+.cat-chip-del:active { color: #ff5050; }
 
-  /* ADD PLAY FORM */
-  .add-form {
-    margin: 16px 24px 0;
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 14px 16px;
-    flex-shrink: 0;
-  }
-  .add-form-row { display: flex; gap: 8px; align-items: flex-end; }
-  .add-form label { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 5px; }
-  .add-form input, .add-form select {
-    height: 40px; border-radius: 8px;
-    border: 1px solid var(--border2); background: var(--surface2);
-    color: var(--text); font-family: var(--font-body); font-size: 14px; padding: 0 12px;
-    outline: none; width: 100%;
-  }
-  .add-form input::placeholder { color: var(--muted); }
-  .add-form input:focus { border-color: var(--accent); }
-  .add-form select option { background: #1e1e1e; }
-  .field-name { flex: 1; }
-  .field-cat { width: 148px; flex-shrink: 0; }
-  .add-btn {
-    height: 40px; padding: 0 18px; border-radius: 8px; flex-shrink: 0;
-    background: var(--accent); color: #000; font-weight: 600; font-size: 14px;
-    border: none; cursor: pointer; font-family: var(--font-body);
-    white-space: nowrap; transition: opacity 0.15s;
-  }
-  .add-btn:active { opacity: 0.8; }
+/* PLAYS LIST */
+.plays-area { flex: 1; overflow-y: auto; padding: 16px 24px 24px; }
+.plays-area::-webkit-scrollbar { display: none; }
+.cat-group { margin-bottom: 20px; }
+.cat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; padding-left: 2px; }
+.plays-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+.play-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+.play-card.starred { border-color: rgba(245,166,35,0.45); }
+.play-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+.play-card-name { font-family: var(--font-display); font-size: 22px; letter-spacing: 0.04em; color: var(--text); line-height: 1.1; }
+.play-card-cat { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.star-btn { background: none; border: none; cursor: pointer; font-size: 20px; line-height: 1; padding: 0; color: var(--muted); flex-shrink: 0; }
+.star-btn.on { color: var(--star); }
+.play-card-actions { display: flex; gap: 6px; }
+.card-btn { flex: 1; height: 32px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font-body); border: 1px solid var(--border2); transition: all 0.15s; }
+.card-btn-delete { background: transparent; color: var(--muted); }
+.card-btn-delete:active { background: rgba(255,80,80,0.1); color: #ff5050; border-color: #ff5050; }
+.card-btn-signal { background: var(--accent-dim); color: var(--accent); border-color: rgba(232,255,71,0.25); }
+.card-btn-signal:active { background: var(--accent); color: #000; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 15px; }
 
-  /* PLAYS LIST */
-  .plays-area { flex: 1; overflow-y: auto; padding: 16px 24px 24px; }
-  .plays-area::-webkit-scrollbar { display: none; }
+/* ASSISTANT */
+#assistant-screen { background: var(--bg); }
+.filter-row { padding: 14px 24px 0; display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; }
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-pill { height: 34px; padding: 0 16px; border-radius: 100px; white-space: nowrap; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+.filter-pill.active { background: var(--accent); color: #000; border-color: transparent; }
+.filter-pill.star-pill.active { background: var(--star); color: #000; border-color: transparent; }
 
-  .cat-group { margin-bottom: 20px; }
-  .cat-label {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 8px; padding-left: 2px;
-  }
-  .plays-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+.asst-plays-area { flex: 1; overflow-y: auto; padding: 16px 24px 24px; }
+.asst-plays-area::-webkit-scrollbar { display: none; }
 
-  .play-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px 14px;
-    display: flex; flex-direction: column; gap: 10px;
-  }
-  .play-card-name { font-family: var(--font-display); font-size: 22px; letter-spacing: 0.04em; color: var(--text); line-height: 1.1; }
-  .play-card-cat { font-size: 11px; color: var(--muted); }
-  .play-card-actions { display: flex; gap: 6px; }
-  .card-btn {
-    flex: 1; height: 32px; border-radius: 7px; font-size: 12px; font-weight: 600;
-    cursor: pointer; font-family: var(--font-body); border: 1px solid var(--border2);
-    transition: all 0.15s;
-  }
-  .card-btn-delete { background: transparent; color: var(--muted); }
-  .card-btn-delete:active { background: rgba(255,80,80,0.1); color: #ff5050; border-color: #ff5050; }
-  .card-btn-signal { background: var(--accent-dim); color: var(--accent); border-color: rgba(232,255,71,0.25); }
-  .card-btn-signal:active { background: var(--accent); color: #000; }
+.recents-section { margin-bottom: 18px; }
+.recents-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.recents-row { display: flex; gap: 8px; }
+.recents-row::-webkit-scrollbar { display: none; }
+.recent-chip { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border2); border-radius: 100px; padding: 7px 18px; font-family: var(--font-display); font-size: 17px; letter-spacing: 0.04em; color: var(--text); cursor: pointer; white-space: nowrap; }
+.recent-chip:active { background: var(--accent-dim); border-color: var(--accent); }
 
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 15px; }
+.asst-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.asst-play-btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 14px 12px; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 2px; transition: all 0.12s; -webkit-appearance: none; width: 100%; position: relative; }
+.asst-play-btn.starred { border-color: rgba(245,166,35,0.4); }
+.asst-play-btn:active { background: var(--accent-dim); border-color: var(--accent); transform: scale(0.97); }
+.asst-play-name { font-family: var(--font-display); font-size: 24px; letter-spacing: 0.04em; color: var(--text); line-height: 1.1; }
+.asst-play-cat { font-size: 11px; color: var(--muted); }
+.asst-star { position: absolute; top: 9px; right: 10px; font-size: 12px; color: var(--star); }
 
-  /* ===================== ASSISTANT SCREEN ===================== */
-  #assistant-screen { background: var(--bg); }
-
-  .asst-header {
-    padding: 20px 24px 0; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .asst-title { font-family: var(--font-display); font-size: 32px; letter-spacing: 0.04em; color: var(--text); line-height: 1; }
-  .asst-title span { color: var(--accent); }
-
-  /* FILTER PILLS */
-  .filter-row {
-    padding: 14px 24px 0; display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0;
-  }
-  .filter-row::-webkit-scrollbar { display: none; }
-  .filter-pill {
-    height: 34px; padding: 0 16px; border-radius: 100px; white-space: nowrap;
-    border: 1px solid var(--border2); background: transparent; color: var(--muted);
-    font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer;
-    transition: all 0.15s; flex-shrink: 0;
-  }
-  .filter-pill.active { background: var(--accent); color: #000; border-color: transparent; }
-
-  /* ASSISTANT PLAYS GRID */
-  .asst-plays-area { flex: 1; overflow-y: auto; padding: 16px 24px 24px; }
-  .asst-plays-area::-webkit-scrollbar { display: none; }
-  .asst-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
-
-  .asst-play-btn {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px 14px;
-    cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px;
-    transition: all 0.12s; -webkit-appearance: none; width: 100%;
-  }
-  .asst-play-btn:active { background: var(--accent-dim); border-color: var(--accent); transform: scale(0.97); }
-  .asst-play-name { font-family: var(--font-display); font-size: 26px; letter-spacing: 0.04em; color: var(--text); line-height: 1.1; }
-  .asst-play-cat { font-size: 11px; color: var(--muted); }
-
-  /* ===================== DISPLAY SCREEN ===================== */
-  #display-screen { background: #000; }
-
-  #display-canvas {
-    width: 100%; height: 100%; display: flex;
-    align-items: center; justify-content: center; flex: 1;
-  }
-  #display-idle-text {
-    font-family: var(--font-display); font-size: 36px; letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.15); text-align: center;
-  }
-  #display-play-text {
-    font-family: var(--font-display); color: #e8ff47;
-    letter-spacing: 0.03em; line-height: 0.9;
-    text-align: center; padding: 32px;
-    font-size: 20vw;
-    word-break: break-word; hyphens: auto;
-    display: none;
-  }
-
-  .display-back-btn {
-    position: absolute; top: 20px; left: 20px; z-index: 10;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.5); border-radius: 8px; padding: 8px 16px;
-    font-size: 13px; font-family: var(--font-body); cursor: pointer;
-  }
-  .display-back-btn:active { background: rgba(255,255,255,0.12); }
-
-  .display-clear-btn {
-    position: absolute; top: 20px; right: 20px; z-index: 10;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.5); border-radius: 8px; padding: 8px 16px;
-    font-size: 13px; font-family: var(--font-body); cursor: pointer;
-  }
-  .display-clear-btn:active { background: rgba(255,255,255,0.12); }
+/* DISPLAY */
+#display-screen { background: #000; }
+#display-canvas { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex: 1; }
+#display-idle-text { font-family: var(--font-display); font-size: 36px; letter-spacing: 0.08em; color: rgba(255,255,255,0.15); text-align: center; }
+#display-play-text { font-family: var(--font-display); color: #e8ff47; letter-spacing: 0.03em; line-height: 0.9; text-align: center; padding: 32px; word-break: break-word; hyphens: auto; display: none; }
+.display-back-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); border-radius: 8px; padding: 8px 16px; font-size: 13px; font-family: var(--font-body); cursor: pointer; }
+.display-back-btn:active { background: rgba(255,255,255,0.12); }
+.display-clear-btn { position: absolute; top: 20px; right: 20px; z-index: 10; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); border-radius: 8px; padding: 8px 16px; font-size: 13px; font-family: var(--font-body); cursor: pointer; }
+.display-clear-btn:active { background: rgba(255,255,255,0.12); }
 </style>
 </head>
 <body>
 
 <!-- COACH SCREEN -->
 <div id="coach-screen" class="screen active">
-  <div class="coach-header">
-    <div class="coach-title">PLAY<span>BOOK</span></div>
+  <div class="screen-header">
+    <div class="screen-title">PLAY<span>BOOK</span></div>
     <div class="mode-toggle">
       <button class="mode-btn active" onclick="switchMode('coach')">Coach</button>
       <button class="mode-btn" onclick="switchMode('assistant')">Assistant</button>
     </div>
   </div>
 
-  <div class="add-form">
-    <div class="add-form-row">
-      <div class="field-name">
-        <label>Play name</label>
-        <input type="text" id="play-input" placeholder="e.g. Horns" autocomplete="off" />
-      </div>
-      <div class="field-cat">
-        <label>Category</label>
-        <select id="cat-input">
-          <option value="Offense">Offense</option>
-          <option value="BLOB">BLOB</option>
-          <option value="SLOB">SLOB</option>
-          <option value="ATO">ATO</option>
-          <option value="Full Court">Full Court</option>
-        </select>
-      </div>
-      <button class="add-btn" onclick="addPlay()">+ Add</button>
-    </div>
+  <div class="coach-tabs">
+    <button class="coach-tab active" id="tab-plays-btn" onclick="showCoachTab('plays')">Plays</button>
+    <button class="coach-tab" id="tab-cats-btn" onclick="showCoachTab('cats')">Categories</button>
   </div>
 
-  <div class="plays-area" id="plays-list"></div>
+  <div id="tab-plays" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+    <div class="add-form">
+      <div class="add-form-row">
+        <div class="field-name">
+          <label>Play name</label>
+          <input type="text" id="play-input" placeholder="e.g. Horns" autocomplete="off" />
+        </div>
+        <div class="field-cat">
+          <label>Category</label>
+          <select id="cat-input"></select>
+        </div>
+        <button class="add-btn" onclick="addPlay()">+ Add</button>
+      </div>
+    </div>
+    <div class="plays-area" id="plays-list"></div>
+  </div>
+
+  <div id="tab-cats" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+    <div class="cat-manager">
+      <div class="cat-manager-row">
+        <input type="text" id="new-cat-input" placeholder="New category name" autocomplete="off" />
+        <button class="add-btn" onclick="addCategory()">+ Add</button>
+      </div>
+      <div class="cat-chips" id="cat-chips"></div>
+    </div>
+  </div>
 </div>
 
 <!-- ASSISTANT SCREEN -->
 <div id="assistant-screen" class="screen">
-  <div class="asst-header">
-    <div class="asst-title">PLAY<span>BOOK</span></div>
+  <div class="screen-header">
+    <div class="screen-title">PLAY<span>BOOK</span></div>
     <div class="mode-toggle">
       <button class="mode-btn" onclick="switchMode('coach')">Coach</button>
       <button class="mode-btn active" onclick="switchMode('assistant')">Assistant</button>
     </div>
   </div>
-
   <div class="filter-row" id="filter-row"></div>
   <div class="asst-plays-area" id="asst-plays-list"></div>
 </div>
@@ -264,108 +210,187 @@
 </div>
 
 <script>
-  const CATS = ['Offense','BLOB','SLOB','ATO','Full Court'];
-  let plays = [];
-  let activeFilter = 'All';
-  let previousScreen = 'assistant';
+  const BUILTIN_CATS = ['Offense','BLOB','SLOB','ATO','Full Court'];
+  let plays = [], customCats = [], recents = [];
+  let activeFilter = 'All', previousScreen = 'assistant';
 
-  function loadPlays() {
+  function allCats() { return [...BUILTIN_CATS, ...customCats]; }
+
+  // PERSISTENCE
+  function load() {
     try { plays = JSON.parse(localStorage.getItem('playbook_plays') || '[]'); } catch(e) { plays = []; }
+    try { customCats = JSON.parse(localStorage.getItem('playbook_cats') || '[]'); } catch(e) { customCats = []; }
+    try { recents = JSON.parse(localStorage.getItem('playbook_recents') || '[]'); } catch(e) { recents = []; }
+  }
+  function savePlays() { localStorage.setItem('playbook_plays', JSON.stringify(plays)); }
+  function saveCats() { localStorage.setItem('playbook_cats', JSON.stringify(customCats)); }
+  function saveRecents() { localStorage.setItem('playbook_recents', JSON.stringify(recents)); }
+
+  // CATEGORIES
+  function addCategory() {
+    const input = document.getElementById('new-cat-input');
+    const name = input.value.trim();
+    if (!name) return;
+    if (allCats().some(c => c.toLowerCase() === name.toLowerCase())) { input.value = ''; return; }
+    customCats.push(name);
+    saveCats(); input.value = '';
+    renderCatManager(); populateCatSelect();
   }
 
-  function savePlays() {
-    localStorage.setItem('playbook_plays', JSON.stringify(plays));
+  function deleteCategory(name) {
+    if (plays.some(p => p.category === name)) {
+      alert('Move or remove all plays in "' + name + '" before deleting this category.');
+      return;
+    }
+    customCats = customCats.filter(c => c !== name);
+    saveCats(); renderCatManager(); populateCatSelect();
   }
 
+  function renderCatManager() {
+    document.getElementById('cat-chips').innerHTML = allCats().map(cat => {
+      const builtin = BUILTIN_CATS.includes(cat);
+      return `<div class="cat-chip ${builtin ? 'builtin' : ''}">
+        ${escHtml(cat)}
+        ${builtin ? '' : `<button class="cat-chip-del" onclick="deleteCategory('${escAttr(cat)}')">×</button>`}
+      </div>`;
+    }).join('');
+  }
+
+  function populateCatSelect() {
+    const sel = document.getElementById('cat-input');
+    const prev = sel.value;
+    sel.innerHTML = allCats().map(c => `<option value="${escAttr(c)}"${c===prev?' selected':''}>${escHtml(c)}</option>`).join('');
+  }
+
+  // COACH TABS
+  function showCoachTab(tab) {
+    document.getElementById('tab-plays-btn').classList.toggle('active', tab === 'plays');
+    document.getElementById('tab-cats-btn').classList.toggle('active', tab === 'cats');
+    document.getElementById('tab-plays').style.display = tab === 'plays' ? 'flex' : 'none';
+    document.getElementById('tab-cats').style.display = tab === 'cats' ? 'flex' : 'none';
+  }
+
+  // PLAYS
   function addPlay() {
     const name = document.getElementById('play-input').value.trim();
     const cat = document.getElementById('cat-input').value;
     if (!name) { document.getElementById('play-input').focus(); return; }
-    plays.push({ id: Date.now(), name, category: cat });
+    plays.push({ id: Date.now(), name, category: cat, starred: false });
     savePlays();
     document.getElementById('play-input').value = '';
-    renderCoach();
-    renderAssistant();
+    renderCoach(); renderAssistant();
   }
 
   document.getElementById('play-input').addEventListener('keydown', e => { if (e.key === 'Enter') addPlay(); });
+  document.getElementById('new-cat-input').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
 
   function deletePlay(id) {
     if (!confirm('Remove this play?')) return;
     plays = plays.filter(p => p.id !== id);
-    savePlays();
-    renderCoach();
-    renderAssistant();
+    recents = recents.filter(r => r !== id);
+    savePlays(); saveRecents();
+    renderCoach(); renderAssistant();
+  }
+
+  function toggleStar(id) {
+    const p = plays.find(p => p.id === id);
+    if (!p) return;
+    p.starred = !p.starred;
+    savePlays(); renderCoach(); renderAssistant();
   }
 
   function signalPlay(id) {
     const play = plays.find(p => p.id === id);
     if (!play) return;
+    recents = [id, ...recents.filter(r => r !== id)].slice(0, 5);
+    saveRecents();
     showDisplay(play);
   }
 
+  // RENDER COACH
   function renderCoach() {
+    populateCatSelect(); renderCatManager();
     const container = document.getElementById('plays-list');
-    if (!plays.length) {
-      container.innerHTML = '<div class="empty-state">No plays yet. Add your first play above.</div>';
-      return;
-    }
+    if (!plays.length) { container.innerHTML = '<div class="empty-state">No plays yet. Add your first play above.</div>'; return; }
+    const cats = allCats();
     const byCat = {};
-    CATS.forEach(c => byCat[c] = []);
-    plays.forEach(p => { if (byCat[p.category]) byCat[p.category].push(p); });
-    CATS.forEach(c => byCat[c].sort((a, b) => a.name.localeCompare(b.name)));
-    container.innerHTML = CATS
-      .filter(c => byCat[c].length > 0)
-      .map(cat => `
-        <div class="cat-group">
-          <div class="cat-label">${cat}</div>
-          <div class="plays-grid">
-            ${byCat[cat].map(p => `
-              <div class="play-card">
-                <div class="play-card-name">${escHtml(p.name)}</div>
-                <div class="play-card-cat">${escHtml(p.category)}</div>
-                <div class="play-card-actions">
-                  <button class="card-btn card-btn-delete" onclick="deletePlay(${p.id})">Remove</button>
-                  <button class="card-btn card-btn-signal" onclick="signalPlay(${p.id})">Signal</button>
+    cats.forEach(c => byCat[c] = []);
+    plays.forEach(p => { if (byCat[p.category] !== undefined) byCat[p.category].push(p); });
+    cats.forEach(c => byCat[c].sort((a, b) => {
+      if (a.starred && !b.starred) return -1;
+      if (!a.starred && b.starred) return 1;
+      return a.name.localeCompare(b.name);
+    }));
+    container.innerHTML = cats.filter(c => byCat[c].length > 0).map(cat => `
+      <div class="cat-group">
+        <div class="cat-label">${escHtml(cat)}</div>
+        <div class="plays-grid">
+          ${byCat[cat].map(p => `
+            <div class="play-card${p.starred?' starred':''}">
+              <div class="play-card-top">
+                <div>
+                  <div class="play-card-name">${escHtml(p.name)}</div>
+                  <div class="play-card-cat">${escHtml(p.category)}</div>
                 </div>
+                <button class="star-btn${p.starred?' on':''}" onclick="toggleStar(${p.id})" title="${p.starred?'Unstar':'Star'}">★</button>
               </div>
-            `).join('')}
-          </div>
+              <div class="play-card-actions">
+                <button class="card-btn card-btn-delete" onclick="deletePlay(${p.id})">Remove</button>
+                <button class="card-btn card-btn-signal" onclick="signalPlay(${p.id})">Signal</button>
+              </div>
+            </div>
+          `).join('')}
         </div>
-      `).join('');
-  }
-
-  function renderAssistant() {
-    renderFilters();
-    renderAsstPlays();
-  }
-
-  function renderFilters() {
-    const row = document.getElementById('filter-row');
-    const usedCats = [...new Set(plays.map(p => p.category))];
-    const pills = ['All', ...CATS.filter(c => usedCats.includes(c))];
-    row.innerHTML = pills.map(cat => `
-      <button class="filter-pill ${activeFilter === cat ? 'active' : ''}" onclick="setFilter('${cat}')">${cat}</button>
+      </div>
     `).join('');
   }
 
-  function setFilter(cat) {
-    activeFilter = cat;
-    renderFilters();
-    renderAsstPlays();
+  // RENDER ASSISTANT
+  function renderAssistant() { renderFilters(); renderAsstPlays(); }
+
+  function renderFilters() {
+    const usedCats = [...new Set(plays.map(p => p.category))];
+    const availCats = allCats().filter(c => usedCats.includes(c));
+    const hasStarred = plays.some(p => p.starred);
+    const pills = [
+      { key: 'All', label: 'All', cls: '' },
+      ...(hasStarred ? [{ key: 'Starred', label: '★ Starred', cls: 'star-pill' }] : []),
+      ...availCats.map(c => ({ key: c, label: c, cls: '' }))
+    ];
+    document.getElementById('filter-row').innerHTML = pills.map(p =>
+      `<button class="filter-pill ${p.cls}${activeFilter===p.key?' active':''}" onclick="setFilter('${escAttr(p.key)}')">${escHtml(p.label)}</button>`
+    ).join('');
   }
+
+  function setFilter(cat) { activeFilter = cat; renderFilters(); renderAsstPlays(); }
 
   function renderAsstPlays() {
     const container = document.getElementById('asst-plays-list');
-    const filtered = (activeFilter === 'All' ? plays : plays.filter(p => p.category === activeFilter))
-      .slice().sort((a, b) => a.name.localeCompare(b.name));
-    if (!filtered.length) {
-      container.innerHTML = '<div class="empty-state">No plays in this category.</div>';
-      return;
-    }
-    container.innerHTML = `<div class="asst-grid">
+    let filtered = activeFilter === 'All' ? plays.slice()
+      : activeFilter === 'Starred' ? plays.filter(p => p.starred)
+      : plays.filter(p => p.category === activeFilter);
+
+    filtered.sort((a, b) => {
+      if (a.starred && !b.starred) return -1;
+      if (!a.starred && b.starred) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    const recentPlays = recents.map(id => plays.find(p => p.id === id)).filter(Boolean);
+    const recentsHtml = recentPlays.length ? `
+      <div class="recents-section">
+        <div class="recents-label">Recent</div>
+        <div class="recents-row">
+          ${recentPlays.map(p => `<div class="recent-chip" onclick="signalPlay(${p.id})">${escHtml(p.name)}</div>`).join('')}
+        </div>
+      </div>` : '';
+
+    if (!filtered.length) { container.innerHTML = recentsHtml + '<div class="empty-state">No plays in this category.</div>'; return; }
+
+    container.innerHTML = recentsHtml + `<div class="asst-grid">
       ${filtered.map(p => `
-        <button class="asst-play-btn" onclick="signalPlay(${p.id})">
+        <button class="asst-play-btn${p.starred?' starred':''}" onclick="signalPlay(${p.id})">
+          ${p.starred ? '<div class="asst-star">★</div>' : ''}
           <div class="asst-play-name">${escHtml(p.name)}</div>
           <div class="asst-play-cat">${escHtml(p.category)}</div>
         </button>
@@ -373,6 +398,7 @@
     </div>`;
   }
 
+  // SCREEN SWITCHING
   function switchMode(mode) {
     document.getElementById('coach-screen').classList.toggle('active', mode === 'coach');
     document.getElementById('assistant-screen').classList.toggle('active', mode === 'assistant');
@@ -381,28 +407,21 @@
     if (mode === 'assistant') renderAssistant();
   }
 
+  // DISPLAY
   function showDisplay(play) {
     document.getElementById('display-screen').classList.add('active');
     document.getElementById('coach-screen').classList.remove('active');
     document.getElementById('assistant-screen').classList.remove('active');
-
     document.getElementById('display-idle-text').style.display = 'none';
-
     const el = document.getElementById('display-play-text');
     el.textContent = play.name;
     el.style.display = 'block';
-
-    // Scale font to fit: use vw as base, then shrink if it overflows height
     const len = play.name.length;
-    // Shorter names get bigger font
     let vw = len <= 4 ? 48 : len <= 8 ? 38 : len <= 12 ? 28 : 20;
     el.style.fontSize = vw + 'vw';
-
-    // After render, check height and shrink if needed
     setTimeout(() => {
       while (el.scrollHeight > window.innerHeight * 0.92 && vw > 4) {
-        vw -= 0.5;
-        el.style.fontSize = vw + 'vw';
+        vw -= 0.5; el.style.fontSize = vw + 'vw';
       }
     }, 30);
   }
@@ -410,8 +429,7 @@
   function clearDisplay() {
     document.getElementById('display-idle-text').style.display = 'block';
     const el = document.getElementById('display-play-text');
-    el.style.display = 'none';
-    el.textContent = '';
+    el.style.display = 'none'; el.textContent = '';
   }
 
   function closeDisplay() {
@@ -419,11 +437,11 @@
     document.getElementById(previousScreen === 'coach' ? 'coach-screen' : 'assistant-screen').classList.add('active');
   }
 
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function escAttr(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 
-  loadPlays();
+  load();
+  showCoachTab('plays');
   renderCoach();
   renderAssistant();
 </script>
