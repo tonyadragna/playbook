@@ -151,30 +151,27 @@
   .asst-play-cat { font-size: 11px; color: var(--muted); }
 
   /* ===================== DISPLAY SCREEN ===================== */
-  #display-screen {
-    background: #000; align-items: center; justify-content: center;
-    position: relative;
-  }
+  #display-screen { background: #000; }
 
-  .display-content { text-align: center; padding: 24px; display: flex; align-items: center; justify-content: center; position: absolute; inset: 0; }
-  .display-play-name {
-    font-family: var(--font-display); color: var(--accent);
-    letter-spacing: 0.03em; line-height: 0.9;
-    animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-    word-break: break-word; max-width: 100%;
+  #display-canvas {
+    width: 100%; height: 100%; display: flex;
+    align-items: center; justify-content: center; flex: 1;
   }
-  .display-idle {
+  #display-idle-text {
     font-family: var(--font-display); font-size: 36px; letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.15); text-align: center;
   }
-
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.85); }
-    to   { opacity: 1; transform: scale(1); }
+  #display-play-text {
+    font-family: var(--font-display); color: #e8ff47;
+    letter-spacing: 0.03em; line-height: 0.9;
+    text-align: center; padding: 32px;
+    font-size: 20vw;
+    word-break: break-word; hyphens: auto;
+    display: none;
   }
 
   .display-back-btn {
-    position: absolute; top: 20px; left: 20px;
+    position: absolute; top: 20px; left: 20px; z-index: 10;
     background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
     color: rgba(255,255,255,0.5); border-radius: 8px; padding: 8px 16px;
     font-size: 13px; font-family: var(--font-body); cursor: pointer;
@@ -182,7 +179,7 @@
   .display-back-btn:active { background: rgba(255,255,255,0.12); }
 
   .display-clear-btn {
-    position: absolute; top: 20px; right: 20px;
+    position: absolute; top: 20px; right: 20px; z-index: 10;
     background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
     color: rgba(255,255,255,0.5); border-radius: 8px; padding: 8px 16px;
     font-size: 13px; font-family: var(--font-body); cursor: pointer;
@@ -243,9 +240,9 @@
 <div id="display-screen" class="screen">
   <button class="display-back-btn" onclick="closeDisplay()">← Back</button>
   <button class="display-clear-btn" onclick="clearDisplay()">Clear</button>
-  <div class="display-content" id="display-content">
-    <div class="display-idle" id="display-idle">WAITING...</div>
-    <div id="display-play-name" class="display-play-name" style="display:none;"></div>
+  <div id="display-canvas">
+    <div id="display-idle-text">WAITING...</div>
+    <div id="display-play-text"></div>
   </div>
 </div>
 
@@ -365,41 +362,37 @@
     if (mode === 'assistant') renderAssistant();
   }
 
-  function fitTextToScreen(el) {
-    el.style.fontSize = '10px';
-    const padW = 48, padH = 48;
-    const maxW = window.innerWidth - padW;
-    const maxH = window.innerHeight - padH;
-    let lo = 10, hi = 1200, mid;
-    for (let i = 0; i < 24; i++) {
-      mid = (lo + hi) / 2;
-      el.style.fontSize = mid + 'px';
-      if (el.scrollWidth <= maxW && el.scrollHeight <= maxH) lo = mid;
-      else hi = mid;
-    }
-    el.style.fontSize = Math.floor(lo) + 'px';
-  }
-
   function showDisplay(play) {
     document.getElementById('display-screen').classList.add('active');
     document.getElementById('coach-screen').classList.remove('active');
     document.getElementById('assistant-screen').classList.remove('active');
 
-    document.getElementById('display-idle').style.display = 'none';
+    document.getElementById('display-idle-text').style.display = 'none';
 
-    const nameEl = document.getElementById('display-play-name');
-    nameEl.textContent = play.name;
-    nameEl.style.display = 'block';
+    const el = document.getElementById('display-play-text');
+    el.textContent = play.name;
+    el.style.display = 'block';
 
-    nameEl.style.animation = 'none';
-    nameEl.offsetHeight;
-    fitTextToScreen(nameEl);
-    nameEl.style.animation = '';
+    // Scale font to fit: use vw as base, then shrink if it overflows height
+    const len = play.name.length;
+    // Shorter names get bigger font
+    let vw = len <= 4 ? 28 : len <= 8 ? 22 : len <= 12 ? 16 : 12;
+    el.style.fontSize = vw + 'vw';
+
+    // After render, check height and shrink if needed
+    setTimeout(() => {
+      while (el.scrollHeight > window.innerHeight * 0.85 && vw > 4) {
+        vw -= 0.5;
+        el.style.fontSize = vw + 'vw';
+      }
+    }, 30);
   }
 
   function clearDisplay() {
-    document.getElementById('display-idle').style.display = 'block';
-    document.getElementById('display-play-name').style.display = 'none';
+    document.getElementById('display-idle-text').style.display = 'block';
+    const el = document.getElementById('display-play-text');
+    el.style.display = 'none';
+    el.textContent = '';
   }
 
   function closeDisplay() {
