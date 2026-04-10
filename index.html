@@ -6,9 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Playbook</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
-</style>
+<style>@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');</style>
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then(reg => {
@@ -24,28 +22,19 @@
 </script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
 :root {
-  --bg: #0a0a0a;
-  --surface: #141414;
-  --surface2: #1e1e1e;
-  --border: rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.15);
-  --text: #f0f0f0;
-  --muted: #888;
-  --accent: #e8ff47;
-  --accent-dim: rgba(232,255,71,0.12);
-  --star: #f5a623;
-  --radius: 12px;
+  --bg: #0a0a0a; --surface: #141414; --surface2: #1e1e1e;
+  --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+  --text: #f0f0f0; --muted: #888; --accent: #e8ff47; --accent-dim: rgba(232,255,71,0.12);
+  --star: #f5a623; --radius: 12px;
   --font-display: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
   --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-
 html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-body); }
 .screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
 .screen.active { display: flex; }
 
-/* SHARED HEADER */
+/* HEADER */
 .screen-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .screen-title { font-family: var(--font-display); font-size: 32px; letter-spacing: 0.04em; color: var(--text); line-height: 1; }
 .screen-title span { color: var(--accent); }
@@ -53,12 +42,12 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .mode-btn { padding: 6px 14px; border-radius: 7px; font-size: 13px; font-weight: 500; border: none; cursor: pointer; font-family: var(--font-body); background: transparent; color: var(--muted); transition: all 0.2s; }
 .mode-btn.active { background: var(--accent); color: #000; }
 
-/* COACH TABS */
-.coach-tabs { display: flex; gap: 4px; margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; flex-shrink: 0; }
-.coach-tab { flex: 1; text-align: center; padding: 7px 0; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; color: var(--muted); border: none; font-family: var(--font-body); transition: all 0.2s; }
-.coach-tab.active { background: var(--surface2); color: var(--text); }
+/* TABS (shared style) */
+.tabs { display: flex; gap: 4px; margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; flex-shrink: 0; }
+.tab-btn { flex: 1; text-align: center; padding: 7px 0; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; color: var(--muted); border: none; font-family: var(--font-body); transition: all 0.2s; }
+.tab-btn.active { background: var(--surface2); color: var(--text); }
 
-/* ADD PLAY FORM */
+/* FORMS */
 .add-form { margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; flex-shrink: 0; }
 .add-form-row { display: flex; gap: 8px; align-items: flex-end; }
 .add-form label { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 5px; }
@@ -71,7 +60,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .add-btn { height: 40px; padding: 0 18px; border-radius: 8px; flex-shrink: 0; background: var(--accent); color: #000; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: var(--font-body); white-space: nowrap; }
 .add-btn:active { opacity: 0.8; }
 
-/* CATEGORIES MANAGER */
+/* CATEGORIES */
 .cat-manager { margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; flex-shrink: 0; }
 .cat-manager-row { display: flex; gap: 8px; margin-bottom: 12px; }
 .cat-manager-row input { flex: 1; height: 40px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: var(--font-body); font-size: 14px; padding: 0 12px; outline: none; }
@@ -102,12 +91,9 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .card-btn-delete:active { background: rgba(255,80,80,0.1); color: #ff5050; border-color: #ff5050; }
 .card-btn-signal { background: var(--accent-dim); color: var(--accent); border-color: rgba(232,255,71,0.25); }
 .card-btn-signal:active { background: var(--accent); color: #000; }
+.card-btn-combo { background: transparent; color: var(--muted); border-color: var(--border2); }
+.card-btn-combo:active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
 .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 15px; }
-
-/* ASSISTANT TABS */
-.asst-tabs { display: flex; gap: 4px; margin: 14px 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; flex-shrink: 0; }
-.asst-tab { flex: 1; text-align: center; padding: 7px 0; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; color: var(--muted); border: none; font-family: var(--font-body); transition: all 0.2s; }
-.asst-tab.active { background: var(--surface2); color: var(--text); }
 
 /* ASSISTANT PLAYS */
 .filter-row { padding: 14px 24px 0; display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; }
@@ -115,17 +101,14 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .filter-pill { height: 34px; padding: 0 16px; border-radius: 100px; white-space: nowrap; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
 .filter-pill.active { background: var(--accent); color: #000; border-color: transparent; }
 .filter-pill.star-pill.active { background: var(--star); color: #000; border-color: transparent; }
-
 .asst-plays-area { flex: 1; overflow-y: auto; padding: 16px 24px 24px; }
 .asst-plays-area::-webkit-scrollbar { display: none; }
-
 .recents-section { margin-bottom: 18px; }
 .recents-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
 .recents-row { display: flex; gap: 8px; overflow-x: auto; }
 .recents-row::-webkit-scrollbar { display: none; }
 .recent-chip { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border2); border-radius: 100px; padding: 7px 18px; font-family: var(--font-display); font-size: 17px; letter-spacing: 0.04em; color: var(--text); cursor: pointer; white-space: nowrap; }
 .recent-chip:active { background: var(--accent-dim); border-color: var(--accent); }
-
 .asst-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
 .asst-play-btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 14px 12px; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 2px; transition: all 0.12s; -webkit-appearance: none; width: 100%; position: relative; }
 .asst-play-btn.starred { border-color: rgba(245,166,35,0.4); }
@@ -134,51 +117,34 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
 .asst-play-cat { font-size: 11px; color: var(--muted); }
 .asst-star { position: absolute; top: 9px; right: 10px; font-size: 12px; color: var(--star); }
 
-/* COMBO TAB */
-.combo-area { flex: 1; overflow-y: auto; padding: 16px 24px 24px; display: flex; flex-direction: column; gap: 16px; }
-.combo-area::-webkit-scrollbar { display: none; }
+/* ── COMBO BUILDER ── */
+.combo-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 
-.combo-preview {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-}
-.combo-preview-text {
-  font-family: var(--font-display); font-size: 28px; letter-spacing: 0.04em; color: var(--accent);
-  line-height: 1; flex: 1; word-break: break-word;
-}
-.combo-preview-empty { color: var(--muted); font-size: 14px; font-family: var(--font-body); }
-.combo-signal-btn {
-  height: 44px; padding: 0 22px; border-radius: 8px; background: var(--accent);
-  color: #000; font-weight: 600; font-size: 15px; border: none; cursor: pointer;
-  font-family: var(--font-body); white-space: nowrap; flex-shrink: 0;
-}
+/* Sequence bar at top */
+.combo-bar { margin: 14px 24px 0; flex-shrink: 0; }
+.combo-bar-inner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; min-height: 60px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.combo-bar-empty { color: var(--muted); font-size: 14px; }
+.combo-token { display: flex; align-items: center; gap: 5px; background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.3); border-radius: 8px; padding: 5px 10px; }
+.combo-token-name { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.04em; color: var(--accent); line-height: 1; }
+.combo-token-del { background: none; border: none; color: rgba(232,255,71,0.5); font-size: 16px; cursor: pointer; line-height: 1; padding: 0; }
+.combo-token-del:active { color: var(--accent); }
+.combo-sep { font-family: var(--font-display); font-size: 18px; color: var(--muted); line-height: 1; }
+
+/* Combo actions */
+.combo-actions { display: flex; gap: 8px; margin: 10px 24px 0; flex-shrink: 0; }
+.combo-clear-btn { height: 40px; padding: 0 16px; border-radius: 8px; background: transparent; color: var(--muted); border: 1px solid var(--border2); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font-body); }
+.combo-clear-btn:active { background: rgba(255,80,80,0.1); color: #ff5050; border-color: #ff5050; }
+.combo-signal-btn { flex: 1; height: 40px; border-radius: 8px; background: var(--accent); color: #000; border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font-body); }
 .combo-signal-btn:active { opacity: 0.8; }
-.combo-signal-btn:disabled { opacity: 0.3; cursor: default; }
+.combo-signal-btn:disabled { opacity: 0.25; cursor: default; }
 
-.combo-slots { display: flex; flex-direction: column; gap: 10px; }
-.combo-slot {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  overflow: hidden;
-}
-.combo-slot-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px; border-bottom: 1px solid var(--border);
-}
-.combo-slot-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.combo-slot-clear { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; line-height: 1; padding: 0; }
-.combo-slot-clear:active { color: #ff5050; }
-.combo-slot-selected {
-  padding: 10px 14px; font-family: var(--font-display); font-size: 22px;
-  letter-spacing: 0.04em; color: var(--accent); line-height: 1;
-}
-.combo-slot-picks { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px; }
-.combo-pick-btn {
-  background: var(--surface2); border: 1px solid var(--border2); border-radius: 100px;
-  padding: 6px 14px; font-family: var(--font-display); font-size: 16px; letter-spacing: 0.04em;
-  color: var(--text); cursor: pointer; -webkit-appearance: none;
-}
+/* Play picker inside combo */
+.combo-picker-area { flex: 1; overflow-y: auto; padding: 12px 24px 24px; }
+.combo-picker-area::-webkit-scrollbar { display: none; }
+.combo-pick-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.combo-pick-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.combo-pick-btn { background: var(--surface); border: 1px solid var(--border2); border-radius: 100px; padding: 7px 18px; font-family: var(--font-display); font-size: 18px; letter-spacing: 0.04em; color: var(--text); cursor: pointer; -webkit-appearance: none; white-space: nowrap; }
 .combo-pick-btn:active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-.combo-pick-btn.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
 /* DISPLAY */
 #display-screen { background: #000; }
@@ -202,13 +168,14 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
       <button class="mode-btn" onclick="switchMode('assistant')">Assistant</button>
     </div>
   </div>
-
-  <div class="coach-tabs">
-    <button class="coach-tab active" id="tab-plays-btn" onclick="showCoachTab('plays')">Plays</button>
-    <button class="coach-tab" id="tab-cats-btn" onclick="showCoachTab('cats')">Categories</button>
+  <div class="tabs">
+    <button class="tab-btn active" id="c-tab-plays-btn" onclick="showCoachTab('plays')">Plays</button>
+    <button class="tab-btn" id="c-tab-combo-btn" onclick="showCoachTab('combo')">Combo</button>
+    <button class="tab-btn" id="c-tab-cats-btn" onclick="showCoachTab('cats')">Categories</button>
   </div>
 
-  <div id="tab-plays" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+  <!-- Coach: Plays -->
+  <div id="c-tab-plays" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
     <div class="add-form">
       <div class="add-form-row">
         <div class="field-name">
@@ -225,7 +192,25 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     <div class="plays-area" id="plays-list"></div>
   </div>
 
-  <div id="tab-cats" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+  <!-- Coach: Combo -->
+  <div id="c-tab-combo" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+    <div class="combo-wrap">
+      <div class="combo-bar">
+        <div class="combo-bar-inner" id="c-combo-bar"><span class="combo-bar-empty">Tap plays below to build a combo</span></div>
+      </div>
+      <div class="combo-actions">
+        <button class="combo-clear-btn" onclick="clearCombo('c')">Clear</button>
+        <button class="combo-signal-btn" id="c-combo-signal" onclick="signalCombo('c')" disabled>Signal combo</button>
+      </div>
+      <div class="combo-picker-area">
+        <div class="combo-pick-label">Tap to add</div>
+        <div class="combo-pick-grid" id="c-combo-picks"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coach: Categories -->
+  <div id="c-tab-cats" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
     <div class="cat-manager">
       <div class="cat-manager-row">
         <input type="text" id="new-cat-input" placeholder="New category name" autocomplete="off" />
@@ -245,60 +230,31 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
       <button class="mode-btn active" onclick="switchMode('assistant')">Assistant</button>
     </div>
   </div>
-
-  <div class="asst-tabs">
-    <button class="asst-tab active" id="atab-plays-btn" onclick="showAsstTab('plays')">Plays</button>
-    <button class="asst-tab" id="atab-combo-btn" onclick="showAsstTab('combo')">Combo</button>
+  <div class="tabs">
+    <button class="tab-btn active" id="a-tab-plays-btn" onclick="showAsstTab('plays')">Plays</button>
+    <button class="tab-btn" id="a-tab-combo-btn" onclick="showAsstTab('combo')">Combo</button>
   </div>
 
-  <!-- Plays tab -->
-  <div id="atab-plays" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+  <!-- Assistant: Plays -->
+  <div id="a-tab-plays" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
     <div class="filter-row" id="filter-row"></div>
     <div class="asst-plays-area" id="asst-plays-list"></div>
   </div>
 
-  <!-- Combo tab -->
-  <div id="atab-combo" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
-    <div class="combo-area" id="combo-area">
-
-      <!-- Live preview + signal button -->
-      <div class="combo-preview">
-        <div id="combo-preview-text" class="combo-preview-empty">Select plays below</div>
-        <button class="combo-signal-btn" id="combo-signal-btn" onclick="signalCombo()" disabled>Signal</button>
+  <!-- Assistant: Combo -->
+  <div id="a-tab-combo" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+    <div class="combo-wrap">
+      <div class="combo-bar">
+        <div class="combo-bar-inner" id="a-combo-bar"><span class="combo-bar-empty">Tap plays below to build a combo</span></div>
       </div>
-
-      <!-- Slot 1 -->
-      <div class="combo-slots">
-        <div class="combo-slot" id="slot-0">
-          <div class="combo-slot-header">
-            <div class="combo-slot-label">Concept 1</div>
-            <button class="combo-slot-clear" onclick="clearSlot(0)">×</button>
-          </div>
-          <div id="slot-0-selected" style="display:none;" class="combo-slot-selected"></div>
-          <div class="combo-slot-picks" id="slot-0-picks"></div>
-        </div>
-
-        <!-- Slot 2 -->
-        <div class="combo-slot" id="slot-1">
-          <div class="combo-slot-header">
-            <div class="combo-slot-label">Concept 2</div>
-            <button class="combo-slot-clear" onclick="clearSlot(1)">×</button>
-          </div>
-          <div id="slot-1-selected" style="display:none;" class="combo-slot-selected"></div>
-          <div class="combo-slot-picks" id="slot-1-picks"></div>
-        </div>
-
-        <!-- Slot 3 (optional) -->
-        <div class="combo-slot" id="slot-2">
-          <div class="combo-slot-header">
-            <div class="combo-slot-label">Concept 3 <span style="color:var(--muted);font-size:10px;font-weight:400;">(optional)</span></div>
-            <button class="combo-slot-clear" onclick="clearSlot(2)">×</button>
-          </div>
-          <div id="slot-2-selected" style="display:none;" class="combo-slot-selected"></div>
-          <div class="combo-slot-picks" id="slot-2-picks"></div>
-        </div>
+      <div class="combo-actions">
+        <button class="combo-clear-btn" onclick="clearCombo('a')">Clear</button>
+        <button class="combo-signal-btn" id="a-combo-signal" onclick="signalCombo('a')" disabled>Signal combo</button>
       </div>
-
+      <div class="combo-picker-area">
+        <div class="combo-pick-label">Tap to add</div>
+        <div class="combo-pick-grid" id="a-combo-picks"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -317,7 +273,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   const BUILTIN_CATS = ['Offense','BLOB','SLOB','ATO','Full Court'];
   let plays = [], customCats = [], recents = [];
   let activeFilter = 'All', previousScreen = 'assistant';
-  let comboSlots = [null, null, null]; // each is a play name string or null
+  // Each context ('c' = coach, 'a' = assistant) has its own combo sequence
+  const comboSeqs = { c: [], a: [] };
 
   function allCats() { return [...BUILTIN_CATS, ...customCats]; }
 
@@ -335,44 +292,40 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   function addCategory() {
     const input = document.getElementById('new-cat-input');
     const name = input.value.trim();
-    if (!name) return;
-    if (allCats().some(c => c.toLowerCase() === name.toLowerCase())) { input.value = ''; return; }
-    customCats.push(name);
-    saveCats(); input.value = '';
+    if (!name || allCats().some(c => c.toLowerCase() === name.toLowerCase())) { input.value=''; return; }
+    customCats.push(name); saveCats(); input.value='';
     renderCatManager(); populateCatSelect();
   }
   function deleteCategory(name) {
-    if (plays.some(p => p.category === name)) { alert('Move or remove all plays in "' + name + '" before deleting this category.'); return; }
+    if (plays.some(p => p.category === name)) { alert('Move or remove all plays in "' + name + '" first.'); return; }
     customCats = customCats.filter(c => c !== name);
     saveCats(); renderCatManager(); populateCatSelect();
   }
   function renderCatManager() {
     document.getElementById('cat-chips').innerHTML = allCats().map(cat => {
-      const builtin = BUILTIN_CATS.includes(cat);
-      return `<div class="cat-chip${builtin?' builtin':''}">${escHtml(cat)}${builtin?'':`<button class="cat-chip-del" onclick="deleteCategory('${escAttr(cat)}')">×</button>`}</div>`;
+      const b = BUILTIN_CATS.includes(cat);
+      return `<div class="cat-chip${b?' builtin':''}">${escHtml(cat)}${b?'':`<button class="cat-chip-del" onclick="deleteCategory('${escAttr(cat)}')">×</button>`}</div>`;
     }).join('');
   }
   function populateCatSelect() {
-    const sel = document.getElementById('cat-input');
-    const prev = sel.value;
+    const sel = document.getElementById('cat-input'), prev = sel.value;
     sel.innerHTML = allCats().map(c => `<option value="${escAttr(c)}"${c===prev?' selected':''}>${escHtml(c)}</option>`).join('');
   }
 
-  // COACH TABS
+  // TABS
   function showCoachTab(tab) {
-    document.getElementById('tab-plays-btn').classList.toggle('active', tab==='plays');
-    document.getElementById('tab-cats-btn').classList.toggle('active', tab==='cats');
-    document.getElementById('tab-plays').style.display = tab==='plays' ? 'flex' : 'none';
-    document.getElementById('tab-cats').style.display = tab==='cats' ? 'flex' : 'none';
+    ['plays','combo','cats'].forEach(t => {
+      document.getElementById(`c-tab-${t}-btn`).classList.toggle('active', t===tab);
+      document.getElementById(`c-tab-${t}`).style.display = t===tab ? 'flex' : 'none';
+    });
+    if (tab==='combo') renderCombo('c');
   }
-
-  // ASSISTANT TABS
   function showAsstTab(tab) {
-    document.getElementById('atab-plays-btn').classList.toggle('active', tab==='plays');
-    document.getElementById('atab-combo-btn').classList.toggle('active', tab==='combo');
-    document.getElementById('atab-plays').style.display = tab==='plays' ? 'flex' : 'none';
-    document.getElementById('atab-combo').style.display = tab==='combo' ? 'flex' : 'none';
-    if (tab==='combo') renderCombo();
+    ['plays','combo'].forEach(t => {
+      document.getElementById(`a-tab-${t}-btn`).classList.toggle('active', t===tab);
+      document.getElementById(`a-tab-${t}`).style.display = t===tab ? 'flex' : 'none';
+    });
+    if (tab==='combo') renderCombo('a');
   }
 
   // PLAYS
@@ -381,82 +334,72 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     const cat = document.getElementById('cat-input').value;
     if (!name) { document.getElementById('play-input').focus(); return; }
     plays.push({ id: Date.now(), name, category: cat, starred: false });
-    savePlays();
-    document.getElementById('play-input').value = '';
+    savePlays(); document.getElementById('play-input').value='';
     renderCoach(); renderAssistant();
   }
-  document.getElementById('play-input').addEventListener('keydown', e => { if (e.key==='Enter') addPlay(); });
-  document.getElementById('new-cat-input').addEventListener('keydown', e => { if (e.key==='Enter') addCategory(); });
+  document.getElementById('play-input').addEventListener('keydown', e => { if(e.key==='Enter') addPlay(); });
+  document.getElementById('new-cat-input').addEventListener('keydown', e => { if(e.key==='Enter') addCategory(); });
 
   function deletePlay(id) {
     if (!confirm('Remove this play?')) return;
     plays = plays.filter(p => p.id !== id);
     recents = recents.filter(r => r !== id);
-    savePlays(); saveRecents();
-    renderCoach(); renderAssistant();
+    savePlays(); saveRecents(); renderCoach(); renderAssistant();
   }
   function toggleStar(id) {
     const p = plays.find(p => p.id === id);
-    if (!p) return;
-    p.starred = !p.starred;
-    savePlays(); renderCoach(); renderAssistant();
+    if (!p) return; p.starred = !p.starred; savePlays(); renderCoach(); renderAssistant();
   }
   function signalPlay(id) {
-    const play = plays.find(p => p.id === id);
-    if (!play) return;
-    recents = [id, ...recents.filter(r => r !== id)].slice(0, 5);
-    saveRecents();
+    const play = plays.find(p => p.id === id); if (!play) return;
+    recents = [id, ...recents.filter(r => r !== id)].slice(0, 5); saveRecents();
     showDisplay(play.name);
   }
 
   // COMBO
-  function setSlot(slotIdx, name) {
-    comboSlots[slotIdx] = name;
-    renderCombo();
+  function addToCombo(ctx, name) {
+    comboSeqs[ctx].push(name);
+    renderCombo(ctx);
   }
-  function clearSlot(slotIdx) {
-    comboSlots[slotIdx] = null;
-    renderCombo();
+  function removeFromCombo(ctx, idx) {
+    comboSeqs[ctx].splice(idx, 1);
+    renderCombo(ctx);
   }
-  function renderCombo() {
-    const sortedNames = plays.map(p => p.name).sort((a,b) => a.localeCompare(b));
-    for (let i = 0; i < 3; i++) {
-      const selectedEl = document.getElementById(`slot-${i}-selected`);
-      const picksEl = document.getElementById(`slot-${i}-picks`);
-      if (comboSlots[i]) {
-        selectedEl.textContent = comboSlots[i];
-        selectedEl.style.display = 'block';
-        picksEl.style.display = 'none';
-      } else {
-        selectedEl.style.display = 'none';
-        picksEl.style.display = 'flex';
-        picksEl.innerHTML = sortedNames.map(name =>
-          `<button class="combo-pick-btn${comboSlots[i]===name?' selected':''}" onclick="setSlot(${i},'${escAttr(name)}')">${escHtml(name)}</button>`
-        ).join('');
-      }
-    }
-    // Update preview
-    const filled = comboSlots.filter(Boolean);
-    const previewEl = document.getElementById('combo-preview-text');
-    const signalBtn = document.getElementById('combo-signal-btn');
-    if (filled.length >= 2) {
-      previewEl.className = 'combo-preview-text';
-      previewEl.textContent = filled.join(' - ');
-      signalBtn.disabled = false;
+  function clearCombo(ctx) {
+    comboSeqs[ctx] = []; renderCombo(ctx);
+  }
+  function signalCombo(ctx) {
+    const seq = comboSeqs[ctx]; if (seq.length < 2) return;
+    showDisplay(seq.join(' - '));
+  }
+  function renderCombo(ctx) {
+    const seq = comboSeqs[ctx];
+    const barEl = document.getElementById(`${ctx}-combo-bar`);
+    const signalBtn = document.getElementById(`${ctx}-combo-signal`);
+    const picksEl = document.getElementById(`${ctx}-combo-picks`);
+
+    // Render sequence bar
+    if (seq.length === 0) {
+      barEl.innerHTML = '<span class="combo-bar-empty">Tap plays below to build a combo</span>';
     } else {
-      previewEl.className = 'combo-preview-empty';
-      previewEl.textContent = filled.length === 1 ? `${filled[0]} - ?` : 'Select at least 2 concepts';
-      signalBtn.disabled = true;
+      barEl.innerHTML = seq.map((name, i) => `
+        ${i > 0 ? '<span class="combo-sep">—</span>' : ''}
+        <div class="combo-token">
+          <span class="combo-token-name">${escHtml(name)}</span>
+          <button class="combo-token-del" onclick="removeFromCombo('${ctx}',${i})">×</button>
+        </div>`).join('');
     }
-  }
-  function signalCombo() {
-    const filled = comboSlots.filter(Boolean);
-    if (filled.length < 2) return;
-    const comboName = filled.join(' - ');
-    // Add to recents as a synthetic entry
-    recents = ['combo:' + comboName, ...recents.filter(r => r !== 'combo:' + comboName)].slice(0, 5);
-    saveRecents();
-    showDisplay(comboName);
+    signalBtn.disabled = seq.length < 2;
+
+    // Render pick grid — all plays alphabetically
+    const sorted = plays.slice().sort((a,b) => a.name.localeCompare(b.name));
+    if (!sorted.length) {
+      picksEl.innerHTML = '<span style="color:var(--muted);font-size:14px;">No plays yet</span>';
+    } else {
+      picksEl.innerHTML = sorted.map(p =>
+        `<button class="combo-pick-btn" onclick="addToCombo('${ctx}','${escAttr(p.name)}')">${escHtml(p.name)}</button>`
+      ).join('');
+    }
   }
 
   // RENDER COACH
@@ -464,8 +407,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     populateCatSelect(); renderCatManager();
     const container = document.getElementById('plays-list');
     if (!plays.length) { container.innerHTML = '<div class="empty-state">No plays yet. Add your first play above.</div>'; return; }
-    const cats = allCats();
-    const byCat = {};
+    const cats = allCats(), byCat = {};
     cats.forEach(c => byCat[c] = []);
     plays.forEach(p => { if (byCat[p.category] !== undefined) byCat[p.category].push(p); });
     cats.forEach(c => byCat[c].sort((a,b) => { if(a.starred&&!b.starred)return -1; if(!a.starred&&b.starred)return 1; return a.name.localeCompare(b.name); }));
@@ -508,16 +450,13 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     const container = document.getElementById('asst-plays-list');
     let filtered = activeFilter==='All' ? plays.slice() : activeFilter==='Starred' ? plays.filter(p=>p.starred) : plays.filter(p=>p.category===activeFilter);
     filtered.sort((a,b) => { if(a.starred&&!b.starred)return -1; if(!a.starred&&b.starred)return 1; return a.name.localeCompare(b.name); });
-    // Recents — filter out combo entries for display
-    const recentPlays = recents
-      .filter(r => !String(r).startsWith('combo:'))
-      .map(id => plays.find(p => p.id === id)).filter(Boolean);
+    const recentPlays = recents.map(id => plays.find(p => p.id === id)).filter(Boolean);
     const recentsHtml = recentPlays.length ? `
       <div class="recents-section">
         <div class="recents-label">Recent</div>
         <div class="recents-row">${recentPlays.map(p=>`<div class="recent-chip" onclick="signalPlay(${p.id})">${escHtml(p.name)}</div>`).join('')}</div>
       </div>` : '';
-    if (!filtered.length) { container.innerHTML = recentsHtml + '<div class="empty-state">No plays in this category.</div>'; return; }
+    if (!filtered.length) { container.innerHTML = recentsHtml+'<div class="empty-state">No plays in this category.</div>'; return; }
     container.innerHTML = recentsHtml + `<div class="asst-grid">
       ${filtered.map(p=>`
         <button class="asst-play-btn${p.starred?' starred':''}" onclick="signalPlay(${p.id})">
@@ -544,13 +483,12 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     document.getElementById('assistant-screen').classList.remove('active');
     document.getElementById('display-idle-text').style.display = 'none';
     const el = document.getElementById('display-play-text');
-    el.textContent = name;
-    el.style.display = 'block';
+    el.textContent = name; el.style.display = 'block';
     const len = name.length;
-    let vw = len <= 4 ? 48 : len <= 8 ? 38 : len <= 12 ? 28 : len <= 20 ? 18 : 13;
+    let vw = len<=4?48:len<=8?38:len<=12?28:len<=20?18:13;
     el.style.fontSize = vw + 'vw';
     setTimeout(() => {
-      while (el.scrollHeight > window.innerHeight * 0.92 && vw > 4) { vw -= 0.5; el.style.fontSize = vw + 'vw'; }
+      while (el.scrollHeight > window.innerHeight * 0.92 && vw > 4) { vw -= 0.5; el.style.fontSize = vw+'vw'; }
     }, 30);
   }
   function clearDisplay() {
@@ -559,6 +497,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
     el.style.display = 'none'; el.textContent = '';
   }
   function closeDisplay() {
+    // Clear whichever combo context was active before display
+    clearCombo(previousScreen === 'coach' ? 'c' : 'a');
     document.getElementById('display-screen').classList.remove('active');
     document.getElementById(previousScreen==='coach'?'coach-screen':'assistant-screen').classList.add('active');
   }
