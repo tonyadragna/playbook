@@ -156,16 +156,12 @@
     position: relative;
   }
 
-  .display-content { text-align: center; padding: 40px; }
+  .display-content { text-align: center; padding: 24px; display: flex; align-items: center; justify-content: center; position: absolute; inset: 0; }
   .display-play-name {
     font-family: var(--font-display); color: var(--accent);
-    font-size: clamp(72px, 16vw, 180px); letter-spacing: 0.03em; line-height: 0.95;
+    letter-spacing: 0.03em; line-height: 0.9;
     animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-  }
-  .display-play-cat {
-    font-size: clamp(18px, 3vw, 28px); color: rgba(255,255,255,0.35);
-    margin-top: 16px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase;
-    font-size: 20px;
+    word-break: break-word; max-width: 100%;
   }
   .display-idle {
     font-family: var(--font-display); font-size: 36px; letter-spacing: 0.08em;
@@ -250,7 +246,6 @@
   <div class="display-content" id="display-content">
     <div class="display-idle" id="display-idle">WAITING...</div>
     <div id="display-play-name" class="display-play-name" style="display:none;"></div>
-    <div id="display-play-cat" class="display-play-cat" style="display:none;"></div>
   </div>
 </div>
 
@@ -370,6 +365,21 @@
     if (mode === 'assistant') renderAssistant();
   }
 
+  function fitTextToScreen(el) {
+    el.style.fontSize = '10px';
+    const padW = 48, padH = 48;
+    const maxW = window.innerWidth - padW;
+    const maxH = window.innerHeight - padH;
+    let lo = 10, hi = 1200, mid;
+    for (let i = 0; i < 24; i++) {
+      mid = (lo + hi) / 2;
+      el.style.fontSize = mid + 'px';
+      if (el.scrollWidth <= maxW && el.scrollHeight <= maxH) lo = mid;
+      else hi = mid;
+    }
+    el.style.fontSize = Math.floor(lo) + 'px';
+  }
+
   function showDisplay(play) {
     document.getElementById('display-screen').classList.add('active');
     document.getElementById('coach-screen').classList.remove('active');
@@ -378,22 +388,18 @@
     document.getElementById('display-idle').style.display = 'none';
 
     const nameEl = document.getElementById('display-play-name');
-    const catEl = document.getElementById('display-play-cat');
     nameEl.textContent = play.name;
-    catEl.textContent = play.category;
     nameEl.style.display = 'block';
-    catEl.style.display = 'block';
 
-    // Re-trigger animation
     nameEl.style.animation = 'none';
     nameEl.offsetHeight;
+    fitTextToScreen(nameEl);
     nameEl.style.animation = '';
   }
 
   function clearDisplay() {
     document.getElementById('display-idle').style.display = 'block';
     document.getElementById('display-play-name').style.display = 'none';
-    document.getElementById('display-play-cat').style.display = 'none';
   }
 
   function closeDisplay() {
